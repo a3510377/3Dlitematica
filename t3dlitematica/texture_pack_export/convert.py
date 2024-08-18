@@ -39,8 +39,9 @@ class ConvertTexturePack:
         self.blocks_data = {"models": {}}
 
         self.scan()
-        if self.temp_folder:
-            shutil.rmtree(self.temp_folder)
+        print(self.temp_folder)
+        # if self.temp_folder:
+        #     shutil.rmtree(self.temp_folder)
 
     def scan(self) -> None:
         sources: List[Source] = []
@@ -83,7 +84,7 @@ class ConvertTexturePack:
 
         block_states_path = self.main_path / "blockstates"
         for source in block_states_path.iterdir():
-            block_states: dict = json.loads((block_states_path / source).read_text(encoding="utf8"))
+            block_states: dict = json.loads(source.read_text(encoding="utf8"))
             for variants in dict(block_states.get("variants", {})).values():
                 if isinstance(variants, dict):
                     load_model(variants["model"].split(":")[-1] + ".json")

@@ -1,5 +1,6 @@
 import logging
 import os
+from gettext import gettext as _
 from pathlib import Path
 from typing import Any, Iterable, Optional, Type, Union
 
@@ -41,7 +42,7 @@ class PathParam(click.Path):
             elif isinstance(ext, Iterable):
                 self.extensions.update(ext)
             else:
-                log.warning(f"Invalid extension type: {ext}({type(ext)})")
+                log.warning(_("Invalid extension type: {ext}({type})").format(ext=ext, type=type(ext)))
 
     def convert(
         self,
@@ -51,7 +52,10 @@ class PathParam(click.Path):
     ) -> Union[str, bytes, os.PathLike[str]]:
         if self.extensions and not any(str(value).endswith(ext) for ext in self.extensions):
             self.fail(
-                f"{value} does not have an acceptable extension: {', '.join(self.extensions)!r}.",
+                _("{value} does not have an acceptable extension: {extensions}").format(
+                    value=value,
+                    extensions=repr(", ".join(self.extensions)),
+                ),
                 param,
                 ctx,
             )

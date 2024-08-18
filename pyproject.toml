@@ -1,12 +1,10 @@
 [tool.ruff]
 # Enable pycodestyle (`E`) and Pyflakes (`F`) codes by default.
 select = ["E", "F"]
-ignore = ["E501","F401","E711","E712"]
-
+ignore = ["E501", "F401", "E711", "E712"]
 # Allow autofix for all enabled rules (when `--fix`) is provided.
-fixable = ["A", "B", "C", "D", "E", "F" ]
+fixable = ["A", "B", "C", "D", "E", "F"]
 unfixable = []
-
 # Exclude a variety of commonly ignored directories.
 exclude = [
     ".bzr",
@@ -30,13 +28,10 @@ exclude = [
     "node_modules",
     "venv",
 ]
-
 # Same as Black.
 line-length = 100
-
 # Allow unused variables when underscore-prefixed.
 dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
-
 # Assume Python 3.10.
 target-version = "py310"
 
@@ -51,21 +46,16 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "3dLitematica"
 authors = [
-    {name = "phillychi3", email = "phillychi3@gmail.com"},
-    {name = "LegendsOfSky"},
+    { name = "phillychi3", email = "phillychi3@gmail.com" },
+    { name = "LegendsOfSky" },
 ]
 description = "A tool can transform Litematica to 3D Obj"
 readme = "README.md"
 requires-python = ">=3.8"
 keywords = ["minecraft", "Litematica"]
-license = {file = "LICENSE"}
-classifiers = [
-    "Programming Language :: Python :: 3",
-]
-dependencies = [
-    "alive_progress",
-    "click"
-]
+license = { file = "LICENSE" }
+classifiers = ["Programming Language :: Python :: 3"]
+dependencies = ["alive_progress", "click"]
 dynamic = ["version"]
 
 [project.urls]
@@ -76,7 +66,7 @@ Repository = "https://github.com/MCRTD/3Dlitematica.git"
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["t3dlitematica*","resource*"]
+include = ["t3dlitematica*", "resource*"]
 
 [tool.setuptools_scm]
 local_scheme = "no-local-version"

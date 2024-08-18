@@ -29,7 +29,7 @@ def cli(debug: bool):
     "output",
     default="./",
     help="Output file path",
-    type=PathParam(file_okay=False, dir_okay=True),
+    type=PathParam(file_okay=False, dir_okay=True, exists=False),
 )
 @click.option(
     "-f",
@@ -37,7 +37,7 @@ def cli(debug: bool):
     "filename",
     default="output.json",
     help="Output file name",
-    type=PathParam(".json"),
+    type=PathParam(".json", exists=False),
 )
 def decode(litematic: Path, output: Path, filename: Path):
     """
@@ -54,14 +54,14 @@ def decode(litematic: Path, output: Path, filename: Path):
 
 @cli.command()
 @click.argument("json_or_litematica", type=PathParam(".litematic", ".json"))
-@click.argument("texture_folder", type=PathParam(file_okay=False, dir_okay=True))
+@click.argument("texture_folder", type=PathParam(file_okay=False, dir_okay=True, exists=False))
 @click.option(
     "-o",
     "--output",
     "output",
     default="./",
     help="Output file path",
-    type=PathParam(file_okay=False, dir_okay=True),
+    type=PathParam(file_okay=False, dir_okay=True, exists=False),
 )
 def obj(json_or_litematica: Path, texture_folder: Path, output: Path):
     """
@@ -79,7 +79,7 @@ def obj(json_or_litematica: Path, texture_folder: Path, output: Path):
 @cli.command()
 @click.argument(
     "texture_pack",
-    type=PathParam(file_okay=False, dir_okay=True),
+    type=PathParam(file_okay=False, dir_okay=True, exists=False),
 )
 @click.option(
     "-o",
@@ -87,7 +87,7 @@ def obj(json_or_litematica: Path, texture_folder: Path, output: Path):
     "output",
     default="./temp",
     help="Output file path",
-    type=PathParam(file_okay=False, dir_okay=True),
+    type=PathParam(file_okay=False, dir_okay=True, exists=False),
 )
 def texture(texture_pack: Path, output: Path):
     """
