@@ -7,10 +7,13 @@ import traceback
 from pathlib import Path
 from typing import List
 
+from ..types import StrPath
 from .mctoobj import Entity
 
+__all__ = ["LitematicaToObj"]
 
-def LitematicaToObj(litematica: dict, TextureFolder: str, output: str = "./") -> "ObjHandel":
+
+def LitematicaToObj(litematica: dict, TextureFolder: StrPath, output: StrPath = "./") -> "ObjHandel":
     size = (
         int(litematica["Metadata"]["EnclosingSize"]["x"]),
         int(litematica["Metadata"]["EnclosingSize"]["y"]),
@@ -19,6 +22,7 @@ def LitematicaToObj(litematica: dict, TextureFolder: str, output: str = "./") ->
     regonname = list(litematica["Regions"].keys())[0]
     name = litematica["Metadata"]["Name"]
     litematica = litematica["Regions"][regonname]["decode_BlockStates"]
+
     return ObjHandel(name, litematica, size, TextureFolder, output)
 
 

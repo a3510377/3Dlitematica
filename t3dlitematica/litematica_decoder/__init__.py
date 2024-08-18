@@ -1,1 +1,1 @@
-from .LitematicaHandler import resolve
+from .LitematicaHandler import *

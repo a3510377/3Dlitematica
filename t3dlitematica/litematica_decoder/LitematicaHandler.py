@@ -1,37 +1,41 @@
+import gzip
 import math
 
-from . import NBTHandler, Utilities, bitstack
+from ..types import StrPath
+from . import NBTHandler, bitstack
+
+__all__ = ["resolve"]
 
 
-def resolve(path: str):
-    litematic = open(path, "rb")
-    binSource = Utilities.GZipUnzip(litematic.read())
-    return decode_BlockStates(to_human(NBTHandler.Resolve(binSource)))
+def resolve(path: StrPath):
+    with gzip.open(path, "rb") as f:
+        bin_source = f.read()
+    return decode_BlockStates(to_human(NBTHandler.Resolve(bin_source)))
 
 
-def to_human(Resolve_data: dict) -> dict:
-    for i in Resolve_data["Metadata"]["EnclosingSize"]:
-        Resolve_data["Metadata"]["EnclosingSize"][i] = str(
-            int(int(Resolve_data["Metadata"]["EnclosingSize"][i]) / 16777216)
+def to_human(resolve_data: dict) -> dict:
+    for i in resolve_data["Metadata"]["EnclosingSize"]:
+        resolve_data["Metadata"]["EnclosingSize"][i] = str(
+            int(int(resolve_data["Metadata"]["EnclosingSize"][i]) / 16777216)
         )
-    for i in Resolve_data["Regions"]:
-        for y in Resolve_data["Regions"][i]["Size"]:
-            Resolve_data["Regions"][i]["Size"][y] = str(
-                math.floor(float(Resolve_data["Regions"][i]["Size"][y]) / 16777216)
+    for i in resolve_data["Regions"]:
+        for y in resolve_data["Regions"][i]["Size"]:
+            resolve_data["Regions"][i]["Size"][y] = str(
+                math.floor(float(resolve_data["Regions"][i]["Size"][y]) / 16777216)
             )
 
-        for y in Resolve_data["Regions"][i]["Position"]:
-            Resolve_data["Regions"][i]["Position"][y] = str(
-                int(int(Resolve_data["Regions"][i]["Position"][y]) / 16777216)
+        for y in resolve_data["Regions"][i]["Position"]:
+            resolve_data["Regions"][i]["Position"][y] = str(
+                int(int(resolve_data["Regions"][i]["Position"][y]) / 16777216)
             )
-        for y, z in enumerate(Resolve_data["Regions"][i]["TileEntities"]):
-            for hh in Resolve_data["Regions"][i]["TileEntities"][y]:
+        for y, z in enumerate(resolve_data["Regions"][i]["TileEntities"]):
+            for hh in resolve_data["Regions"][i]["TileEntities"][y]:
                 if hh == "x" or hh == "y" or hh == "z":
-                    Resolve_data["Regions"][i]["TileEntities"][y][hh] = str(
-                        int(int(Resolve_data["Regions"][i]["TileEntities"][y][hh]) / 16777216)
+                    resolve_data["Regions"][i]["TileEntities"][y][hh] = str(
+                        int(int(resolve_data["Regions"][i]["TileEntities"][y][hh]) / 16777216)
                     )
 
-    return Resolve_data
+    return resolve_data
 
 
 def decode_BlockStates(Resolve_data: dict) -> dict:

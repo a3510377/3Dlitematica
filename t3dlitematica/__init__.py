@@ -1,3 +1,3 @@
-from t3dlitematica.litematica_decoder import *
-from t3dlitematica.obj_builder import *
-from t3dlitematica.texture_pack_export import *
+from .litematica_decoder import *
+from .obj_builder import *
+from .texture_pack_export import *

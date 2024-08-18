@@ -33,3 +33,5 @@ temp/
 env
 minecraft_pack
 test
+
+.vscode/settings.json
