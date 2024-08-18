@@ -8,28 +8,7 @@ from alive_progress import alive_bar
 from .litematica_decoder import resolve
 from .obj_builder import LitematicaToObj
 from .texture_pack_export import ConvertTexturePack
-
-
-class Litematica(click.ParamType):
-    name = "litematica"
-
-    def convert(self, value, param, ctx):
-        if not os.path.exists(value):
-            self.fail(f"{value} does not exist.")
-        if not value.endswith(".litematic"):
-            self.fail(f"{value} is not a litematica file.")
-        return value
-
-
-class LitematicaOrJson(click.ParamType):
-    name = "LitematicaOrJson"
-
-    def convert(self, value, param, ctx) -> str:
-        if not os.path.exists(value):
-            self.fail(f"{value} does not exist.")
-        if not value.endswith(".litematic") and not value.endswith(".json"):
-            self.fail(f"{value} is not a litematica or json file.")
-        return value
+from .utils import PathParam
 
 
 @click.group()
@@ -40,10 +19,10 @@ def cli(debug: bool):
 
 
 @cli.command()
-@click.argument("litematica", type=Litematica())
+@click.argument("litematica", type=PathParam(".litematic"))
 @click.option("-o", "--output", "output", default="./", help="Output file path")
 @click.option("-f", "--filename", "filename", default="output.json", help="Output file name")
-def Decode(litematica, output, filename):
+def decode(litematica, output, filename):
     """
     Decode a litematica file to json file
     """
@@ -55,10 +34,10 @@ def Decode(litematica, output, filename):
 
 
 @cli.command()
-@click.argument("json_or_litematica", type=LitematicaOrJson())
+@click.argument("json_or_litematica", type=PathParam(".litematic", ".json"))
 @click.argument("texture_folder", type=click.Path(exists=True))
 @click.option("-o", "--output", "output", default="./", help="Output file path")
-def Obj(json_or_litematica: str, texture_folder: str, output: str):
+def obj(json_or_litematica: str, texture_folder: str, output: str):
     """
     Convert a litematica file to obj file
     """
@@ -75,7 +54,7 @@ def Obj(json_or_litematica: str, texture_folder: str, output: str):
 @cli.command()
 @click.argument("texturepack", type=click.Path(exists=True))
 @click.option("-o", "--output", "output", default="./temp", help="Output file path")
-def Texture(texturepack, output):
+def texture(texturepack, output):
     """
     Convert texture pack for 3d litematica
     """
