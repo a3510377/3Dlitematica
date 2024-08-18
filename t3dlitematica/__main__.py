@@ -8,7 +8,7 @@ from alive_progress import alive_bar
 from .litematica_decoder import resolve
 from .obj_builder import LitematicaToObj
 from .texture_pack_export import ConvertTexturePack
-from .utils import PathParam
+from .utils import PathParam, TexturePackParam
 
 log = logging.getLogger(__name__)
 
@@ -54,7 +54,7 @@ def decode(litematic: Path, output: Path, filename: Path):
 
 @cli.command()
 @click.argument("json_or_litematica", type=PathParam(".litematic", ".json"))
-@click.argument("texture_folder", type=PathParam(file_okay=False, dir_okay=True, exists=False))
+@click.argument("texture_pack", type=TexturePackParam())
 @click.option(
     "-o",
     "--output",
@@ -63,7 +63,7 @@ def decode(litematic: Path, output: Path, filename: Path):
     help="Output file path",
     type=PathParam(file_okay=False, dir_okay=True, exists=False),
 )
-def obj(json_or_litematica: Path, texture_folder: Path, output: Path):
+def obj(json_or_litematica: Path, texture_pack: Path, output: Path):
     """
     Convert a litematica file to obj file
     """
@@ -73,14 +73,11 @@ def obj(json_or_litematica: Path, texture_folder: Path, output: Path):
         else:
             litematica = json.loads(json_or_litematica.read_text(encoding="utf8"))
 
-        LitematicaToObj(litematica, texture_folder, output)
+        LitematicaToObj(litematica, texture_pack, output)
 
 
 @cli.command()
-@click.argument(
-    "texture_pack",
-    type=PathParam(file_okay=False, dir_okay=True, exists=False),
-)
+@click.argument("texture_pack", type=TexturePackParam())
 @click.option(
     "-o",
     "--output",

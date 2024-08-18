@@ -2,46 +2,28 @@ import json
 import logging
 import shutil
 from pathlib import Path
-from typing import List, Optional
+from typing import List
 
 from ..types import Atlases, BlockModel, Source, StrPath
+from ..utils import TexturePack
 
 log = logging.getLogger(__name__)
 
 
 class ConvertTexturePack:
     def __init__(self, path: StrPath, output: StrPath):
-        self.path = Path(path)
-        self.temp_folder: Optional[str] = None
-
-        if self.path.suffix == ".zip":
-            import tempfile
-            import zipfile
-
-            self.temp_folder = tempfile.mkdtemp()
-            with zipfile.ZipFile(self.path, "r") as z:
-                z.extractall(self.temp_folder)
-            self.path = Path(self.temp_folder)
-
-        if not (self.path / "assets").exists():
-            dirs = self.path.iterdir()
-            path_with_assets = next((d for d in dirs if (d / "assets").exists()), None)
-            if path_with_assets is None:
+        with TexturePack(path) as tp:
+            if tp is None:
                 raise FileNotFoundError("No such directory: 'assets'")
-            self.path = path_with_assets
-            log.info(f"Auto detect assets directory: {str(path_with_assets)!r}")
 
-        self.output = Path(output)
-        self.output.mkdir(parents=True, exist_ok=True)
-        self.main_path = self.path / "assets" / "minecraft"
+            self.path = tp
+            self.output = Path(output)
+            self.output.mkdir(parents=True, exist_ok=True)
+            self.main_path = self.path / "assets" / "minecraft"
+            self.block_list = ["armor_trims", "mob_effects", "shield_patterns", "particles"]
+            self.blocks_data = {"models": {}}
 
-        self.block_list = ["armor_trims", "mob_effects", "shield_patterns", "particles"]
-        self.blocks_data = {"models": {}}
-
-        self.scan()
-        print(self.temp_folder)
-        # if self.temp_folder:
-        #     shutil.rmtree(self.temp_folder)
+            self.scan()
 
     def scan(self) -> None:
         sources: List[Source] = []

@@ -32,7 +32,7 @@ class MultiLoad:
 
         texture_packs.reverse()
         for texture_pack in texture_packs:
-            texture_data = json.loads(Path(texture_pack, "output.json", encoding="utf8").read_text())
+            texture_data = json.loads(Path(texture_pack, "output.json").read_text(encoding="utf8"))
 
             # merge
             for models in texture_data["models"]:

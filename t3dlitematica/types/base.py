@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 from typing import Union
 
@@ -12,4 +13,4 @@ ResourceLocation = str
 TextureLocation = str
 ParticleLocation = str
 
-StrPath = Union[str, Path]
+StrPath = Union[str, Path, os.PathLike[str]]

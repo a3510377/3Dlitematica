@@ -1,10 +1,13 @@
 import logging
 import os
+import shutil
 from gettext import gettext as _
 from pathlib import Path
 from typing import Any, Iterable, Optional, Type, Union
 
 import click
+
+from .types import StrPath
 
 log = logging.getLogger(__name__)
 
@@ -60,3 +63,53 @@ class PathParam(click.Path):
                 ctx,
             )
         return super().convert(value, param, ctx)
+
+
+class TexturePack:
+    def __init__(self, path: StrPath) -> None:
+        self.path = Path(path)
+        self.temp_folder: Optional[Path] = None
+
+    def __enter__(self) -> Optional[Path]:
+        path = self.path
+        if path.is_file():
+            if path.suffix != ".zip":
+                return None
+
+            # as zip
+            import tempfile
+            import zipfile
+
+            self.temp_folder = Path(tempfile.mkdtemp())
+            with zipfile.ZipFile(path, "r") as z:
+                z.extractall(self.temp_folder)
+            path = self.temp_folder
+
+        dirs = path.iterdir()
+        path_with_assets = next((d for d in dirs if (d / "assets").exists()), None)
+        if path_with_assets is None:
+            raise FileNotFoundError("No such directory: 'assets'")
+        return path_with_assets
+
+    def __exit__(self, exc_type, exc_inst, exc_tb) -> None:
+        if self.temp_folder:
+            shutil.rmtree(self.temp_folder)
+
+
+class TexturePackParam(click.ParamType):
+    def __init__(self) -> None:
+        super().__init__()
+
+    def convert(
+        self,
+        value: Union[str, os.PathLike[str]],
+        param: click.Parameter,
+        ctx: click.Context,
+    ) -> Path:
+        path = Path(value)
+        if path.is_file():
+            if path.suffix != ".zip":
+                raise FileNotFoundError("Not a texture pack")
+            return path
+
+        return path
