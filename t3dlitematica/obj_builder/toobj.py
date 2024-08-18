@@ -1,14 +1,16 @@
 import json
-import sys
-import traceback
-from .mctoobj import Enity
 import os
-from typing import List
-import tempfile
 import shutil
+import sys
+import tempfile
+import traceback
 from pathlib import Path
+from typing import List
 
-def LitimaticaToObj(litematica: dict, TextureFolder: str, output: str = "./") -> None:
+from .mctoobj import Entity
+
+
+def LitematicaToObj(litematica: dict, TextureFolder: str, output: str = "./") -> "ObjHandel":
     size = (
         int(litematica["Metadata"]["EnclosingSize"]["x"]),
         int(litematica["Metadata"]["EnclosingSize"]["y"]),
@@ -17,10 +19,19 @@ def LitimaticaToObj(litematica: dict, TextureFolder: str, output: str = "./") ->
     regonname = list(litematica["Regions"].keys())[0]
     name = litematica["Metadata"]["Name"]
     litematica = litematica["Regions"][regonname]["decode_BlockStates"]
-    return Objhandel(name, litematica, size, TextureFolder, output)
+    return ObjHandel(name, litematica, size, TextureFolder, output)
 
-class Objhandel:
-    def __init__(self, name:str, data:List[dict], size:tuple[int,int,int],TextureFolder:str,outputfolder:str,show_error_block:bool=False) -> None:
+
+class ObjHandel:
+    def __init__(
+        self,
+        name: str,
+        data: List[dict],
+        size: tuple[int, int, int],
+        TextureFolder: str,
+        outputfolder: str,
+        show_error_block: bool = False,
+    ) -> None:
         self.name = name
         self.tempfolder = tempfile.mkdtemp()
         self.objfile = open(os.path.join(self.tempfolder, self.name + ".obj"), "w")
@@ -52,7 +63,7 @@ class Objhandel:
                         pass
                     else:
                         try:
-                            self.addEnity(Enity(i / 10, j / 10, k / 10, data[count], self.TextureFolder))
+                            self.addEnity(Entity(i / 10, j / 10, k / 10, data[count], self.TextureFolder))
                         except Exception as e:
                             error_class = e.__class__.__name__
                             detail = e.args[0]
@@ -92,12 +103,12 @@ class Objhandel:
     f ...
     """
 
-    def addEnity(self, Enity: Enity) -> None:
+    def addEnity(self, Enity: Entity) -> None:
         if Enity.objdata["v"] == []:
             raise Exception('Enity.objdata["v"] is empty')
         self.tmpdata[(Enity.x, Enity.y, Enity.z)] = Enity.objdata
 
-    def addblock(self, x:float, y:float, z:float, blockname:str) -> None:
+    def addblock(self, x: float, y: float, z: float, blockname: str) -> None:
         self.tmpdata[(x, y, z)] = {
             "blockname": blockname,
             "v": [
@@ -141,7 +152,7 @@ class Objhandel:
                     if j not in self.textures:
                         self.textures.append(j)
                         shutil.copy(
-                            os.path.join(self.TextureFolder,"textures", j + ".png"),
+                            os.path.join(self.TextureFolder, "textures", j + ".png"),
                             os.path.join(self.tempfolder, "textures"),
                         )
                         temp += "newmtl " + j.split("/")[-1] + "\n"
@@ -150,12 +161,12 @@ class Objhandel:
                         temp += "\n"
         temp += "newmtl " + "missing" + "\n"
         temp += "Ka 1.000 1.000 1.000\n"
-        temp += (
-            "map_Kd " + os.path.join("textures", "Minecraft_missing_texture_block.svg.png") + "\n"
-        )
+        temp += "map_Kd " + os.path.join("textures", "Minecraft_missing_texture_block.svg.png") + "\n"
         temp += "\n"
         shutil.copy(
-            os.path.join(Path(__file__).parent.parent.parent, "resource","Minecraft_missing_texture_block.svg.png"),
+            os.path.join(
+                Path(__file__).parent.parent.parent, "resource", "Minecraft_missing_texture_block.svg.png"
+            ),
             os.path.join(self.tempfolder, "textures", "Minecraft_missing_texture_block.svg.png"),
         )
         with open(os.path.join(self.tempfolder, self.name + ".mtl"), "w") as f:
@@ -177,9 +188,7 @@ class Objhandel:
             for f in self.tmpdata[blocks]["f"]:
                 if "textures" in self.tmpdata[blocks]:
                     try:
-                        oneblock += (
-                            "usemtl " + self.tmpdata[blocks]["textures"][ct1].split("/")[-1] + "\n"
-                        )
+                        oneblock += "usemtl " + self.tmpdata[blocks]["textures"][ct1].split("/")[-1] + "\n"
                     except:
                         oneblock += "usemtl " + "missing" + "\n"
                 else:
@@ -226,5 +235,4 @@ if __name__ == "__main__":
         int(data["Metadata"]["EnclosingSize"]["z"]),
     )
     data = data["Regions"]["Unnamed"]["decode_BlockStates"]
-    Objhandel("test", data, size)
-
+    ObjHandel("test", data, size)

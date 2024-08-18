@@ -2,6 +2,7 @@ import json
 import math
 import os
 from typing import Callable, List, Union
+
 # example:
 #         "cube": {
 #             "parent": "block",
@@ -51,8 +52,8 @@ from typing import Callable, List, Union
 # element 裡面的 from , to 是指一個block的3維空間的座標
 
 
-class Enity:
-    def __init__(self, x:float, y:float, z:float, blockdata:dict,texturepath:str) -> None:
+class Entity:
+    def __init__(self, x: float, y: float, z: float, blockdata: dict, texturepath: str) -> None:
         self.blockdata = blockdata
         self.name = blockdata["Name"].replace("minecraft:", "")
         self.x = x
@@ -164,7 +165,7 @@ class Enity:
                     self.load_model(i["apply"]["model"].split("/")[-1], code)
                 code += 1
 
-    def load_model(self, modelname:str, code=None,isparent=False) -> None:
+    def load_model(self, modelname: str, code=None, isparent=False) -> None:
         with open(
             self.texturepath,
             "r",
@@ -172,7 +173,7 @@ class Enity:
         ) as f:
             model = json.load(f)["models"][modelname]
             if "parent" in model:
-                self.load_model(model["parent"].split("/")[-1], code,True)
+                self.load_model(model["parent"].split("/")[-1], code, True)
             # if isparent:
             #     self.parents[modelname] = model
             if "textures" in model:
@@ -181,11 +182,11 @@ class Enity:
                 self.element = model["elements"]
 
         if not isparent:
-            self.enitys.append(Build_enity(self, code,self.element))
+            self.enitys.append(Build_enity(self, code, self.element))
 
 
 class Build_enity:
-    def __init__(self, mother: Enity, code:str,elements:List[dict]) -> None:
+    def __init__(self, mother: Entity, code: str, elements: List[dict]) -> None:
         self.name = code
         self.x = mother.x
         self.y = mother.y
@@ -209,14 +210,22 @@ class Build_enity:
         alrrote = []
 
         for i in range(len(self.rotatemode)):
-            if isinstance(self.rotatemode[i],dict):
-                if self.rotatemode[i]["mode"] == "y" and self.rotatemode[i] not in alrrote and self.rotatemode[i]["code"] == self.name:
+            if isinstance(self.rotatemode[i], dict):
+                if (
+                    self.rotatemode[i]["mode"] == "y"
+                    and self.rotatemode[i] not in alrrote
+                    and self.rotatemode[i]["code"] == self.name
+                ):
                     alrrote.append(self.rotatemode[i])
                     for j in range(len(self.objdata["v"])):
                         self.objdata["v"][j] = self.rotate_y(
                             self.objdata["v"][j], self.rotate[i], self.center
                         )
-                elif self.rotatemode[i]["mode"] == "x" and self.rotatemode[i] not in alrrote and self.rotatemode[i]["code"] == self.name:
+                elif (
+                    self.rotatemode[i]["mode"] == "x"
+                    and self.rotatemode[i] not in alrrote
+                    and self.rotatemode[i]["code"] == self.name
+                ):
                     alrrote.append(self.rotatemode[i])
                     for j in range(len(self.objdata["v"])):
                         self.objdata["v"][j] = self.rotate_x(
@@ -256,7 +265,9 @@ class Build_enity:
                 self.objdata["textures"].append(self.textures[texturename])
                 return
 
-    def add_F(self, listV:List[float], rotate:int=0, elerotate:Callable[[List[float]],List[float]]=None) -> None:
+    def add_F(
+        self, listV: List[float], rotate: int = 0, elerotate: Callable[[List[float]], List[float]] = None
+    ) -> None:
         f = []
         if rotate == 90:
             listV = [listV[3], listV[0], listV[1], listV[2]]
@@ -271,7 +282,7 @@ class Build_enity:
             f.append(self.append_pos(self.objdata["v"], i))
         self.objdata["f"].append(f)
 
-    def build_element(self, element:dict) -> None:
+    def build_element(self, element: dict) -> None:
         # 一個方塊 = 1*1*1
         # 數據給的方塊 = 16*16*16
         # 轉換為 1*1*1
@@ -279,8 +290,6 @@ class Build_enity:
         pos2 = element["to"]
 
         elerotate = None
-
-
 
         if "rotation" in element:
             center = []
@@ -301,15 +310,17 @@ class Build_enity:
                 elerotate = lambda x: self.rotate_x(  # noqa: E731
                     x, element["rotation"]["angle"], center if center != [] else self.center
                 )
-            if "rescale" in element["rotation"] and element["rotation"]["rescale"] and "rail" in self.textures:
-                pos1 = [0,9,-3]
-                pos2 = [16,9,19]
+            if (
+                "rescale" in element["rotation"]
+                and element["rotation"]["rescale"]
+                and "rail" in self.textures
+            ):
+                pos1 = [0, 9, -3]
+                pos2 = [16, 9, 19]
 
         for i in range(3):
             pos1[i] /= 16 * 10
             pos2[i] /= 16 * 10
-
-
 
         # 六個面 = down up north south west east
         for i in element["faces"]:
@@ -414,7 +425,7 @@ class Build_enity:
                     self.add_texture(i)
                 self.add_vt(element["faces"][i])
 
-    def rotate_y(self, point:List[float], angle:Union[int,float], center:List[float]):
+    def rotate_y(self, point: List[float], angle: Union[int, float], center: List[float]):
         angle = math.radians(angle)
         x = point[0] - center[0]
         z = point[2] - center[2]
@@ -422,7 +433,7 @@ class Build_enity:
         point[2] = x * math.sin(angle) + z * math.cos(angle) + center[2]
         return point
 
-    def rotate_x(self, point:List[float], angle:Union[int,float], center:List[float]):
+    def rotate_x(self, point: List[float], angle: Union[int, float], center: List[float]):
         angle = math.radians(angle)
         y = point[1] - center[1]
         z = point[2] - center[2]
@@ -430,7 +441,7 @@ class Build_enity:
         point[2] = -y * math.sin(angle) + z * math.cos(angle) + center[2]
         return point
 
-    def add_vt(self, face:dict) -> None:
+    def add_vt(self, face: dict) -> None:
         if "uv" in face:
             self.objdata["vt"].append(
                 [

@@ -29,3 +29,7 @@ test.json
 temp/
 *.obj
 *.mtl
+
+env
+minecraft_pack
+test
