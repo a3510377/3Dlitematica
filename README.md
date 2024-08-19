@@ -5,21 +5,21 @@
 
 ![圖片](https://github.com/MCRTD/3Dlitematica/assets/55632143/d7fceedb-a28e-4b54-a73a-d31da145e608)
 
-# Install 
+# Install
+
 ```bash
 pip install --upgrade 3dLitematica
 ```
 
 # CLI
 
-```
+```sh
 3dLitematica [OPTION] command
 ```
 
 # Option
 
-```
-
+```sh
 Options:
   --help           Show this message and exit.
 
@@ -32,7 +32,7 @@ Commands:
 
 # Decode
 
-```
+```sh
 Usage: 3dlitematica decode [OPTIONS] LITEMATICA
 Example: 3dlitematica decode -o ./ -f output.json fss.litematica
 
@@ -44,7 +44,8 @@ Options:
 ```
 
 # Obj
-```
+
+```sh
 Usage: 3dlitematica obj [OPTIONS] JSON_OR_LITEMATICA TEXTUREFOLDER
 Example: 3dlitematica obj -o ./ fss.litematica ./temp
 
@@ -56,7 +57,8 @@ Options:
 ```
 
 # texture
-```
+
+```sh
 Usage: 3dlitematica texture [OPTIONS] TEXTUREPACK
 Example: 3dlitematica texture -o ./temp ./minecraft_pack
   Convert texture pack for 3dlitematica
@@ -65,4 +67,3 @@ Options:
   -o, --output TEXT  Output file path
   --help             Show this message and exit.
 ```
-
