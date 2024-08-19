@@ -18,7 +18,6 @@ class ConvertTexturePack:
 
             self.path = tp
             self.output = Path(output)
-            self.output.mkdir(parents=True, exist_ok=True)
             self.main_path = self.path / "assets" / "minecraft"
             self.block_list = ["armor_trims", "mob_effects", "shield_patterns", "particles"]
             self.blocks_data = {"models": {}}
@@ -87,22 +86,19 @@ class ConvertTexturePack:
 
             self.blocks_data[source.stem] = block_states
 
-        (self.output / "output.json").write_text(json.dumps(self.blocks_data, indent=2, ensure_ascii=False))
-
+        # clean up
         output_textures = self.output / "textures"
         if output_textures.exists():
             shutil.rmtree(str(output_textures.absolute()))
 
+        # write output
+        self.output.mkdir(parents=True, exist_ok=True)
+        (self.output / "output.json").write_text(json.dumps(self.blocks_data, indent=2, ensure_ascii=False))
+
+        # copy textures
         for source in need_copy:
             shutil.copytree(
-                (self.main_path / "textures" / source),
-                (self.output / "textures" / source),
+                self.main_path / "textures" / source,
+                self.output / "textures" / source,
                 ignore=shutil.ignore_patterns("_*.json"),
             )
-
-
-if __name__ == "__main__":
-    ConvertTexturePack(
-        r"C:\Users\phill\OneDrive\桌面\codetool\VanillaDefault+1.20",
-        r"C:\Users\phill\OneDrive\Documents\coed_thing\3Dlitematica\temp",
-    )
