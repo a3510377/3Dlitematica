@@ -1,7 +1,8 @@
-import struct
-from . import Utilities
 import copy
+import struct
 from typing import Union
+
+from . import Utilities
 
 
 def Resolve(binSource:bytes , indentationWhiteSpace:int = 2) -> dict:
@@ -236,4 +237,4 @@ def ReadTagName(binSource:bytes , pointer):
     pointer += 2
     if binSource[pointer] == 0:
         return "Unknow Name" , pointer + 1
-    return ReadString(binSource , pointer)
+    return ReadString(binSource , pointer)    return ReadString(binSource , pointer)

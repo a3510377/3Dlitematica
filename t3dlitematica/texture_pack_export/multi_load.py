@@ -21,7 +21,9 @@ class MultiLoad:
 
     def __enter__(self):
         texture_packs = self.texture_packs
-        final_output = json.loads(Path(self.texture_packs[-1], "output.json").read_text(encoding="utf8"))
+        final_output = json.loads(
+            Path(self.texture_packs[-1], "output.json").read_text(encoding="utf8")
+        )
 
         temp = texture_packs.pop()
         if not texture_packs:

@@ -1,4 +1,6 @@
-from typing import List, Any
+from typing import Any, List
+
+
 class bitstack:
     def __init__(self, bytelong:int, Resolve_data: List[Any]) -> None:
         self.bites = ""
@@ -29,5 +31,7 @@ class bitstack:
         stepbytes = [int(i, 2) for i in stepbytes]  # 二進位轉十進位
         decode_BlockStates = []
         for z in stepbytes:
+            decode_BlockStates.append(self.Resolve_data[z])
+        return decode_BlockStates
             decode_BlockStates.append(self.Resolve_data[z])
         return decode_BlockStates

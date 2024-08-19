@@ -268,7 +268,10 @@ class Build_enity:
                 return
 
     def add_F(
-        self, listV: List[float], rotate: int = 0, elerotate: Callable[[List[float]], List[float]] = None
+        self,
+        listV: List[float],
+        rotate: int = 0,
+        elerotate: Callable[[List[float]], List[float]] = None,
     ) -> None:
         f = []
         if rotate == 90:

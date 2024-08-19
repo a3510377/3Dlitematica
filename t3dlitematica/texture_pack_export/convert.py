@@ -93,7 +93,9 @@ class ConvertTexturePack:
 
         # write output
         self.output.mkdir(parents=True, exist_ok=True)
-        (self.output / "output.json").write_text(json.dumps(self.blocks_data, indent=2, ensure_ascii=False))
+        (self.output / "output.json").write_text(
+            json.dumps(self.blocks_data, indent=2, ensure_ascii=False)
+        )
 
         # copy textures
         for source in need_copy:
