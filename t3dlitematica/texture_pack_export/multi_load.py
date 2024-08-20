@@ -6,6 +6,8 @@ from typing import List, Optional
 
 from ..types import StrPath
 
+__all__ = ["MultiLoad"]
+
 
 class MultiLoad:
     def __init__(self, texture_packs: List[StrPath]) -> None:
@@ -30,7 +32,7 @@ class MultiLoad:
             return temp
 
         self.temp_folder = Path(tempfile.mkdtemp())
-        shutil.copytree(Path(temp, "textures"), Path(self.temp_folder, "textures"))
+        shutil.copytree(temp / "textures", self.temp_folder / "textures")
 
         texture_packs.reverse()
         for texture_pack in texture_packs:

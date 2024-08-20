@@ -7,6 +7,8 @@ from typing import List
 from ..types import Atlases, BlockModel, Source, StrPath
 from ..utils import TexturePack
 
+__all__ = ["ConvertTexturePack"]
+
 log = logging.getLogger(__name__)
 
 
@@ -88,8 +90,8 @@ class ConvertTexturePack:
 
         # clean up
         output_textures = self.output / "textures"
-        if output_textures.exists():
-            shutil.rmtree(str(output_textures.absolute()))
+        if output_textures.is_dir():
+            shutil.rmtree(output_textures)
 
         # write output
         self.output.mkdir(parents=True, exist_ok=True)

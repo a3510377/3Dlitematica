@@ -45,7 +45,9 @@ class PathParam(click.Path):
             elif isinstance(ext, Iterable):
                 self.extensions.update(ext)
             else:
-                log.warning(_("Invalid extension type: {ext}({type})").format(ext=ext, type=type(ext)))
+                log.warning(
+                    _("Invalid extension type: {ext}({type})").format(ext=ext, type=type(ext))
+                )
 
     def convert(
         self,
@@ -85,8 +87,11 @@ class TexturePack:
                 z.extractall(self.temp_folder)
             path = self.temp_folder
 
+        if path / "assets":
+            return path
+
         dirs = path.iterdir()
-        path_with_assets = next((d for d in dirs if (d / "assets").exists()), None)
+        path_with_assets = next((d for d in dirs if (d / "assets").is_dir()), None)
         if path_with_assets is None:
             raise FileNotFoundError("No such directory: 'assets'")
         return path_with_assets

@@ -163,4 +163,5 @@ temp/
 *.mtl
 
 minecraft_pack
-test
+test/tmp
+test/out
