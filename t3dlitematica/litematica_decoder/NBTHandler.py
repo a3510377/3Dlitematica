@@ -5,7 +5,7 @@ from typing import Union
 from . import Utilities
 
 
-def Resolve(binSource: bytes, indentationWhiteSpace: int = 2) -> dict:
+def resolve(binSource: bytes, indentationWhiteSpace: int = 2) -> dict:
     jsonLines, _ = ReadCompoundTag(binSource, indentationWhiteSpace)
     return jsonLines
 
@@ -163,9 +163,7 @@ def ReadStringTag(binSource: bytes, indentationWhiteSpace, pointer, defaultInden
     return jsonLine, pointer
 
 
-def ReadListTag(
-    binSource: bytes, indentationWhiteSpace, pointer, defaultIndentation, callByList=False
-):
+def ReadListTag(binSource: bytes, indentationWhiteSpace, pointer, defaultIndentation, callByList=False):
     if callByList:
         tagName = "SubList"
     else:
@@ -189,9 +187,7 @@ def ReadListTag(
                 unpackFormat = "q"
             size = (1 << contentType) >> 1
             for _ in range(contentCount):
-                tagContent = str(struct.unpack(unpackFormat, binSource[pointer : pointer + size]))[
-                    1:-2
-                ]
+                tagContent = str(struct.unpack(unpackFormat, binSource[pointer : pointer + size]))[1:-2]
                 jsonLines["value"].append(tagContent)
         elif contentType == 5:  # TAG_Float
             for _ in range(contentCount):
@@ -260,9 +256,7 @@ def ReadString(binSource: bytes, pointer):
 
 
 def ReadFloat(binSource: bytes, pointer):
-    return float(
-        str(struct.unpack(">f", bytearray(binSource[pointer : pointer + 4])))[1:-2]
-    ), pointer + 4
+    return float(str(struct.unpack(">f", bytearray(binSource[pointer : pointer + 4])))[1:-2]), pointer + 4
 
 
 def ReadDouble(binSource: bytes, pointer):

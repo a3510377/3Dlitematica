@@ -10,7 +10,7 @@ __all__ = ["resolve"]
 def resolve(path: StrPath):
     with gzip.open(path, "rb") as f:
         bin_source = f.read()
-    return decode_BlockStates(to_human(NBTHandler.Resolve(bin_source)))
+    return decode_block_states(to_human(NBTHandler.resolve(bin_source)))
 
 
 def to_human(resolve_data: dict) -> dict:
@@ -38,7 +38,7 @@ def to_human(resolve_data: dict) -> dict:
     return resolve_data
 
 
-def decode_BlockStates(Resolve_data: dict) -> dict:
+def decode_block_states(resolve_data: dict) -> dict:
     #   "BlockStates":[
     #      "360323773641625836",
     #      "977288815838265344"
@@ -56,14 +56,14 @@ def decode_BlockStates(Resolve_data: dict) -> dict:
     # Grouping the first word's binary data little-endian:
     # (last) (0001) 00001 00001 00010 00010 00010 00010 00010 00001 00001 00001 00000 00000 (first)
 
-    for i in Resolve_data["Regions"]:
-        Resolve_data["Regions"][i]["decode_BlockStates"] = []
+    for i in resolve_data["Regions"]:
+        resolve_data["Regions"][i]["decode_BlockStates"] = []
         bitlist = bitstack.bitstack(
-            len(Resolve_data["Regions"][i]["BlockStatePalette"]),
-            Resolve_data["Regions"][i]["BlockStatePalette"],
+            len(resolve_data["Regions"][i]["BlockStatePalette"]),
+            resolve_data["Regions"][i]["BlockStatePalette"],
         )
-        for y in Resolve_data["Regions"][i]["BlockStates"]:
+        for y in resolve_data["Regions"][i]["BlockStates"]:
             bitlist.add(y)
-        Resolve_data["Regions"][i]["decode_BlockStates"] = bitlist.calc()
+        resolve_data["Regions"][i]["decode_BlockStates"] = bitlist.calc()
         print("decode success")
-    return Resolve_data
+    return resolve_data

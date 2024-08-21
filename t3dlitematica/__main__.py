@@ -6,7 +6,7 @@ import click
 from alive_progress import alive_bar
 
 from .litematica_decoder import resolve
-from .obj_builder import LitematicaToObj
+from .obj_builder import litematica_to_obj
 from .texture_pack_export import ConvertTexturePack
 from .utils import PathParam, TexturePackParam
 
@@ -73,7 +73,7 @@ def obj(json_or_litematica: Path, texture_pack: Path, output: Path):
         else:
             litematica = json.loads(json_or_litematica.read_text(encoding="utf8"))
 
-        LitematicaToObj(litematica, texture_pack, output)
+        litematica_to_obj(litematica, texture_pack, output)
 
 
 @cli.command()

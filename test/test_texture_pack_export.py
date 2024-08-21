@@ -15,8 +15,7 @@ class TestTexturePackExport(unittest.TestCase):
         assets_version_directory = download_assets()
         ConvertTexturePack(assets_version_directory, out)
 
-        self.assertTrue(out.is_dir() and len(list(out.iterdir())))
-        rmdir(out)
+        self.assertTrue(out.is_dir() and next(out.iterdir(), None) is not None)
 
 
 if __name__ == "__main__":

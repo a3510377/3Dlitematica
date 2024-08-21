@@ -1,7 +1,10 @@
+import logging
 import shutil
 from pathlib import Path
 
 from alive_progress import alive_bar
+
+log = logging.getLogger(__name__)
 
 TEST_PATH = Path("test")
 TEST_TMP_PATH = TEST_PATH / "tmp"
@@ -24,6 +27,7 @@ def download_assets(version: str = DEFAULT_VERSION) -> Path:
     assets = TEST_TMP_PATH / "assets" / version
     assets.mkdir(parents=True, exist_ok=True)
 
+    rmdir(assets / ".git")
     if assets.is_dir():
         if (assets / "assets").is_dir():
             return assets
@@ -56,4 +60,7 @@ def rmdir(path: Path) -> None:
         None
     """
     if path.is_dir():
-        shutil.rmtree(path)
+        try:
+            shutil.rmtree(path)
+        except PermissionError:
+            log.warning(f"Permission denied while removing {path}")

@@ -10,11 +10,13 @@ from typing import List
 from ..types import StrPath
 from .mctoobj import Entity
 
-__all__ = ["LitematicaToObj"]
+__all__ = ["litematica_to_obj"]
 
 
-def LitematicaToObj(
-    litematica: dict, TextureFolder: StrPath, output: StrPath = "./"
+def litematica_to_obj(
+    litematica: dict,
+    TextureFolder: StrPath,
+    output: StrPath = "./",
 ) -> "ObjHandel":
     size = (
         int(litematica["Metadata"]["EnclosingSize"]["x"]),
@@ -69,9 +71,7 @@ class ObjHandel:
                         pass
                     else:
                         try:
-                            self.addEnity(
-                                Entity(i / 10, j / 10, k / 10, data[count], self.TextureFolder)
-                            )
+                            self.addEnity(Entity(i / 10, j / 10, k / 10, data[count], self.TextureFolder))
                         except Exception as e:
                             error_class = e.__class__.__name__
                             detail = e.args[0]
@@ -165,15 +165,11 @@ class ObjHandel:
                         )
                         temp += "newmtl " + j.split("/")[-1] + "\n"
                         temp += "Ka 1.000 1.000 1.000\n"
-                        temp += (
-                            "map_Kd " + os.path.join("textures", j.split("/")[-1] + ".png") + "\n"
-                        )
+                        temp += "map_Kd " + os.path.join("textures", j.split("/")[-1] + ".png") + "\n"
                         temp += "\n"
         temp += "newmtl " + "missing" + "\n"
         temp += "Ka 1.000 1.000 1.000\n"
-        temp += (
-            "map_Kd " + os.path.join("textures", "Minecraft_missing_texture_block.svg.png") + "\n"
-        )
+        temp += "map_Kd " + os.path.join("textures", "Minecraft_missing_texture_block.svg.png") + "\n"
         temp += "\n"
         shutil.copy(
             os.path.join(
@@ -202,9 +198,7 @@ class ObjHandel:
             for f in self.tmpdata[blocks]["f"]:
                 if "textures" in self.tmpdata[blocks]:
                     try:
-                        oneblock += (
-                            "usemtl " + self.tmpdata[blocks]["textures"][ct1].split("/")[-1] + "\n"
-                        )
+                        oneblock += "usemtl " + self.tmpdata[blocks]["textures"][ct1].split("/")[-1] + "\n"
                     except:
                         oneblock += "usemtl " + "missing" + "\n"
                 else:
